@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const models = require("../models");
+const loginRequired = require("../helpers/loginRequired");
 
 // csrf
 const csrf = require("csurf");
@@ -31,13 +32,13 @@ const upload = multer({ storage: storage });
 router.get("/products", async (_, res) => {
     try {
         const products = await models.Products.findAll();
-        console.log("---------------");
-        console.log(products[0].dateFormat(products[0].createdAt));
         res.render("admin/products.html", { products });
-    } catch (e) {}
+    } catch (e) {
+        console.log(e);
+    }
 });
 
-router.get("/products/write", csrfProtection, (req, res) => {
+router.get("/products/write", loginRequired, csrfProtection, (req, res) => {
     res.render("admin/form.html", { csrfToken: req.csrfToken() });
 });
 
@@ -48,7 +49,9 @@ router.post(
     async (req, res) => {
         try {
             req.body.thumbnail = req.file ? req.file.filename : "";
-            await models.Products.create(req.body);
+            // 유저를 가져온다음에 저장
+            const user = await models.User.findByPk(req.user.id);
+            await user.createProduct(req.body);
             res.redirect("/admin/products");
         } catch (e) {
             console.log(e);
@@ -81,15 +84,24 @@ router.post("/products/detail/:id", async (req, res) => {
     }
 });
 
-router.get("/products/edit/:id", csrfProtection, async (req, res) => {
-    try {
-        const product = await models.Products.findByPk(req.params.id);
-        res.render("admin/form.html", { product, csrfToken: req.csrfToken() });
-    } catch (e) {}
-});
+router.get(
+    "/products/edit/:id",
+    loginRequired,
+    csrfProtection,
+    async (req, res) => {
+        try {
+            const product = await models.Products.findByPk(req.params.id);
+            res.render("admin/form.html", {
+                product,
+                csrfToken: req.csrfToken(),
+            });
+        } catch (e) {}
+    }
+);
 
 router.post(
     "/products/edit/:id",
+    loginRequired,
     upload.single("thumbnail"),
     csrfProtection,
     async (req, res) => {

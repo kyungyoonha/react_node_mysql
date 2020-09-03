@@ -21,7 +21,7 @@ db.sequelize
     .then(() => {
         console.log("Connection has been established successfully.");
         return db.sequelize.sync();
-        // return db.sequelize.drop();
+        //return db.sequelize.drop();
     })
     .then(() => {
         console.log("DB Sync complete");
@@ -33,6 +33,7 @@ db.sequelize
 const admin = require("./routes/admin");
 const accounts = require("./routes/accounts");
 const auth = require("./routes/auth");
+const home = require("./routes/home.js");
 
 const app = express();
 const port = 8080;
@@ -79,11 +80,8 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.get("/", (req, res) => {
-    res.send("first app");
-});
-
 // Routing
+app.use("/", home);
 app.use("/admin", admin);
 app.use("/accounts", accounts);
 app.use("/auth", auth);
