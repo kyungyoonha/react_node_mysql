@@ -3,3 +3,4 @@ DB_USER = "아이디"
 DB_PASSWORD = "패스워드"
 DB_HOST = "DB호스트"
 
+SESSION_SECRET = "세션 SECRET"
