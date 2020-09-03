@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 var dotenv = require("dotenv");
+dotenv.config(); //LOAD CONFIG
 
 // flash 메시지 관련
 const flash = require("connect-flash");
@@ -29,8 +30,9 @@ db.sequelize
         console.log("Unable to connect to the database:", err);
     });
 
-var admin = require("./routes/admin");
+const admin = require("./routes/admin");
 const accounts = require("./routes/accounts");
+const auth = require("./routes/auth");
 
 const app = express();
 const port = 8080;
@@ -68,6 +70,15 @@ app.use(passport.session());
 //플래시 메시지 관련
 app.use(flash());
 
+//.......flash 아래에다 붙여 넣는다.
+//로그인 정보 뷰에서만 변수로 셋팅, 전체 미들웨어는 router위에 두어야 에러가 안난다
+app.use(function (req, res, next) {
+    app.locals.isLogin = req.isAuthenticated();
+    //app.locals.urlparameter = req.url; //현재 url 정보를 보내고 싶으면 이와같이 셋팅
+    //app.locals.userData = req.user; //사용 정보를 보내고 싶으면 이와같이 셋팅
+    next();
+});
+
 app.get("/", (req, res) => {
     res.send("first app");
 });
@@ -75,6 +86,7 @@ app.get("/", (req, res) => {
 // Routing
 app.use("/admin", admin);
 app.use("/accounts", accounts);
+app.use("/auth", auth);
 
 app.listen(port, () => {
     console.log("Express listening on port", port);

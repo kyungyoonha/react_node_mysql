@@ -92,9 +92,7 @@ router.post(
         failureFlash: true,
     }),
     (_, res) => {
-        res.send(
-            '<script>alert("로그인 성공");location.href="/accounts/success";</script>'
-        );
+        res.send('<script>alert("로그인 성공");location.href="/";</script>');
     }
 );
 
