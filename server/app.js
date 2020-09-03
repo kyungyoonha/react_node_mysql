@@ -22,6 +22,7 @@ db.sequelize
     });
 
 var admin = require("./routes/admin");
+const accounts = require("./routes/accounts");
 
 const app = express();
 const port = 8080;
@@ -46,6 +47,7 @@ app.get("/", (req, res) => {
 
 // Routing
 app.use("/admin", admin);
+app.use("/accounts", accounts);
 
 app.listen(port, () => {
     console.log("Express listening on port", port);
