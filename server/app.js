@@ -2,6 +2,8 @@ const express = require("express");
 const nunjucks = require("nunjucks");
 const logger = require("morgan");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const path = require("path");
 
 // DB
 const db = require("./models");
@@ -10,6 +12,7 @@ db.sequelize
     .then(() => {
         console.log("Connection has been established successfully.");
         return db.sequelize.sync();
+        // return db.sequelize.drop();
     })
     .then(() => {
         console.log("DB Sync complete");
@@ -32,6 +35,10 @@ nunjucks.configure("server/template", {
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+// 업로드 path 추가
+app.use("/uploads", express.static(path.resolve(__dirname, "uploads")));
 
 app.get("/", (req, res) => {
     res.send("first app");
