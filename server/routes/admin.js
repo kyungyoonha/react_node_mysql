@@ -171,8 +171,8 @@ router.post(
     "/products/ajax_summernote",
     loginRequired,
     upload.single("thumbnail"),
-    (req, res) => {
-        res.send("/uploads/" + res.file.filename);
+    function (req, res) {
+        res.send("/uploads/" + req.file.filename);
     }
 );
 

@@ -32,7 +32,7 @@
     "scripts": {
         "client": "react-scripts start",
         "build": "react-scripts build",
-        "server": "nodemon -e js,html server/app.js",
+        "server": "nodemon -e js,html server/server.js",
         "eject": "react-scripts eject"
     },
     "eslintConfig": {

@@ -51,3 +51,5 @@ Sequelize. nodejs에서 mysql을 쉽게 다룰 수 있도록 도와주는 라이
 Sequelize. 자바스크립트 코드로 mysql을 제어할 수 있게 된다.
 Sequelize. ORM (Object-Relational Mapping)으로 분류된다
 Sequelize. ORM. 객체와 관계형 데이터베이스의 관계를 매핑해주는 도구
+
+summernote. 위지윅 에디터
