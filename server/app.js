@@ -34,6 +34,7 @@ const admin = require("./routes/admin");
 const accounts = require("./routes/accounts");
 const auth = require("./routes/auth");
 const home = require("./routes/home.js");
+const chat = require("./router/chat");
 
 const app = express();
 const port = 8080;
@@ -85,6 +86,7 @@ app.use("/", home);
 app.use("/admin", admin);
 app.use("/accounts", accounts);
 app.use("/auth", auth);
+app.use("/chat", chat);
 
 app.listen(port, () => {
     console.log("Express listening on port", port);

@@ -25,3 +25,8 @@ const uploadDir = path.join(__dirname, "../uploads");
 // 업로드 path 추가
 app.use("/uploads", express.static(path.resolve(__dirname, "uploads")));
 ```
+
+### 모듈
+
+-   #### express-paginate
+-   #### socket.io

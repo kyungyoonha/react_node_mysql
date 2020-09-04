@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const models = require("../models");
 const loginRequired = require("../helpers/loginRequired");
+const paginate = require("express-paginate");
 
 // csrf
 const csrf = require("csurf");
@@ -29,13 +30,30 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-router.get("/products", async (_, res) => {
+router.get("/products", paginate.middleware(3, 50), async (req, res) => {
     try {
-        const products = await models.Products.findAll();
-        res.render("admin/products.html", { products });
-    } catch (e) {
-        console.log(e);
-    }
+        const [products, totalCount] = await Promise.all([
+            models.Products.findAll({
+                include: [
+                    {
+                        model: models.User,
+                        as: "Owner",
+                        attributes: ["username", "displayname"],
+                    },
+                ],
+                limit: req.query.limit,
+                offset: req.offset,
+            }),
+
+            models.Products.count(),
+        ]);
+
+        const pageCount = Math.ceil(totalCount / req.query.limit);
+
+        const pages = paginate.getArrayPages(req)(4, pageCount, req.query.page);
+
+        res.render("admin/products.html", { products, pages, pageCount });
+    } catch (e) {}
 });
 
 router.get("/products/write", loginRequired, csrfProtection, (req, res) => {
