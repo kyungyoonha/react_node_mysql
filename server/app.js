@@ -105,6 +105,10 @@ class App {
             "/uploads",
             express.static(path.resolve(__dirname, "uploads"))
         );
+        this.app.use(
+            "/static",
+            express.static(path.resolve(__dirname, "static"))
+        );
     }
 
     setLocals() {
