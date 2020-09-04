@@ -167,12 +167,13 @@ router.get("/products/delete/:product_id/:memo_id", async (req, res) => {
     } catch (e) {}
 });
 
+router.post(
+    "/products/ajax_summernote",
+    loginRequired,
+    upload.single("thumbnail"),
+    (req, res) => {
+        res.send("/uploads/" + res.file.filename);
+    }
+);
+
 module.exports = router;
-/*
-
-Sequelize. nodejs에서 mysql을 쉽게 다룰 수 있도록 도와주는 라이브러리
-Sequelize. 자바스크립트 코드로 mysql을 제어할 수 있게 된다.
-Sequelize. ORM (Object-Relational Mapping)으로 분류된다
-Sequelize. ORM. 객체와 관계형 데이터베이스의 관계를 매핑해주는 도구
-
-*/

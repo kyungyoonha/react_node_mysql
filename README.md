@@ -30,3 +30,24 @@ app.use("/uploads", express.static(path.resolve(__dirname, "uploads")));
 
 -   #### express-paginate
 -   #### socket.io
+
+    -   [단방향 채팅 ajax]
+
+        -   사용자가 서버에 요청
+        -   사용자가 매번 새로운 글이 왔나 서버로 체크를 해야됨
+
+    -   [양방향 채팅 socket.io]
+
+        -   사용자가 서버에 채팅 입력하면
+        -   서버가 연결되어 있는 사용자에게 뿌려줌
+
+    -   [socket.io 작동방식]
+        -   websocket 지원 브라우저는 그대로
+        -   지원 안하는 경우 플래시, ajax, iframe 등으로 체크해줌
+
+-   #### connect-session-sequelize
+
+Sequelize. nodejs에서 mysql을 쉽게 다룰 수 있도록 도와주는 라이브러리
+Sequelize. 자바스크립트 코드로 mysql을 제어할 수 있게 된다.
+Sequelize. ORM (Object-Relational Mapping)으로 분류된다
+Sequelize. ORM. 객체와 관계형 데이터베이스의 관계를 매핑해주는 도구

@@ -13,7 +13,7 @@ block content -%}
         </p>
     {% endif %}
 
-    {{ product.description }}
+    {{ product.description | safe }}
  
     <hr />
     <ul>
