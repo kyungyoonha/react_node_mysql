@@ -17,7 +17,7 @@ block content -%} {% include "layout/sidebar.html" %}
                 </a>
             </td>
             <td>{{ checkout.status }}</td>
-            <td>{{ checkout.paid_amount }}</td>
+            <td>{{ checkout.numberFormat }} 원</td>
             <td>{{ checkout.buyer_addr }}</td>
             <td>{{ checkout.dateFormat( checkout.createdAt ) }}</td>
         </tr>
