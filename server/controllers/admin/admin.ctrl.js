@@ -1,6 +1,10 @@
 const models = require("../../models");
 const paginate = require("express-paginate");
 
+const fs = require("fs");
+const path = require("path");
+const uploadDir = path.join(__dirname, "../../uploads"); // 루트의 uploads 위치에 저장한다.
+
 exports.get_products = async (req, res) => {
     try {
         const [products, totalCount] = await Promise.all([
@@ -43,4 +47,97 @@ exports.post_write = async (req, res) => {
     } catch (e) {
         console.log(e);
     }
+};
+
+exports.get_detail = async (req, res) => {
+    try {
+        const product = await models.Products.findOne({
+            where: {
+                id: req.params.id,
+            },
+            include: ["Memo"],
+        });
+
+        res.render("admin/detail.html", { product });
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+exports.post_detail = async (req, res) => {
+    try {
+        const product = await models.Products.findByPk(req.params.id);
+        // create + as에 적은 내용 ( Products.js association 에서 적은 내용 )
+        await product.createMemo(req.body);
+        res.redirect("/admin/products/detail/" + req.params.id);
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+exports.get_edit = async (req, res) => {
+    try {
+        const product = await models.Products.findByPk(req.params.id);
+        res.render("admin/form.html", { product, csrfToken: req.csrfToken() });
+    } catch (e) {}
+};
+
+exports.post_edit = async (req, res) => {
+    try {
+        // 이전에 저장되어있는 파일명을 받아오기 위함
+        const product = await models.Products.findByPk(req.params.id);
+
+        if (req.file && product.thumbnail) {
+            //요청중에 파일이 존재 할시 이전이미지 지운다.
+            fs.unlinkSync(uploadDir + "/" + product.thumbnail);
+        }
+
+        // 파일요청이면 파일명을 담고 아니면 이전 DB에서 가져온다
+        req.body.thumbnail = req.file ? req.file.filename : product.thumbnail;
+
+        await models.Products.update(req.body, {
+            where: { id: req.params.id },
+        });
+        res.redirect("/admin/products/detail/" + req.params.id);
+    } catch (e) {}
+};
+
+exports.get_delete = async (req, res) => {
+    try {
+        await models.Products.destroy({
+            where: {
+                id: req.params.id,
+            },
+        });
+        res.redirect("/admin/products");
+    } catch (e) {}
+};
+
+exports.delete_memo = async (req, res) => {
+    try {
+        await models.ProductsMemo.destroy({
+            where: {
+                id: req.params.memo_id,
+            },
+        });
+        res.redirect("/admin/products/detail/" + req.params.product_id);
+    } catch (e) {}
+};
+
+exports.ajax_summernote = (req, res) => {
+    res.send("/uploads/" + req.file.filename);
+};
+
+exports.get_order = async (req, res) => {
+    try {
+        const checkouts = await models.Checkout.findAll();
+        res.render("admin/order.html", { checkouts });
+    } catch (e) {}
+};
+
+exports.get_order_edit = async (req, res) => {
+    try {
+        const checkout = await models.Checkout.findByPk(req.params.id);
+        res.render("admin/order_edit/html", { checkout });
+    } catch (e) {}
 };
