@@ -39,4 +39,6 @@ router.post(
 router.get("/order", ctrl.get_order);
 router.get("/order/edit/:id", ctrl.get_order_edit);
 
+router.get("/statistics", ctrl.statistics);
+
 module.exports = router;
