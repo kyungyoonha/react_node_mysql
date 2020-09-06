@@ -24,3 +24,32 @@ exports.post_complete = async (req, res) => {
 exports.get_success = (req, res) => {
     res.render("checkout/success.html");
 };
+
+exports.get_complete = async (req, res) => {
+    // 모듈 선언
+    const { Iamporter } = require("iamporter");
+    const iamporter = new Iamporter({
+        apiKey: process.env.IMPORT_REST_API,
+        secret: process.env.IMPORT_REST_SECRET,
+    });
+
+    try {
+        const iamportData = await iamporter.findByImpUid(req.query.imp_uid);
+        await models.Checkout.create({
+            imp_uid: iamportData.data.imp_uid,
+            merchant_uid: iamportData.data.merchant_uid,
+            paid_amount: iamportData.data.amount,
+            apply_num: iamportData.data.apply_num,
+
+            buyer_email: iamportData.data.buyer_email,
+            buyer_name: iamportData.data.buyer_name,
+            buyer_tel: iamportData.data.buyer_tel,
+            buyer_addr: iamportData.data.buyer_addr,
+            buyer_postcode: iamportData.data.buyer_postcode,
+
+            status: "결재완료",
+        });
+
+        res.redirect("/checkout/success");
+    } catch (e) {}
+};
