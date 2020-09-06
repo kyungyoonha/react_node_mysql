@@ -53,3 +53,20 @@ exports.get_complete = async (req, res) => {
         res.redirect("/checkout/success");
     } catch (e) {}
 };
+
+exports.get_nomember = (_, res) => {
+    res.render("checkout/nomember.html");
+};
+
+exports.get_nomember_search = async (req, res) => {
+    try {
+        const checkouts = await models.Checkout.findAll({
+            where: {
+                buyer_email: req.query.buyer_email,
+            },
+        });
+        res.render("checkout/search.html", { checkouts });
+    } catch (e) {
+        console.log(e);
+    }
+};
